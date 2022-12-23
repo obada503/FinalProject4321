@@ -1,0 +1,590 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Printtokens</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">to_student</a>
+</div>
+
+<h1>Coverage Summary for Class: Printtokens (to_student)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Printtokens</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    84.2%
+  </span>
+  <span class="absValue">
+    (16/19)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    68.9%
+  </span>
+  <span class="absValue">
+    (135/196)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package to_student;
+&nbsp;import java.io.*;
+&nbsp;
+<b class="fc">&nbsp;public class Printtokens{</b>
+<b class="fc">&nbsp;	static int error = 0;</b>
+<b class="fc">&nbsp;	static int keyword = 1;</b>
+<b class="fc">&nbsp;	static int spec_symbol = 2;</b>
+<b class="fc">&nbsp;	static int identifier = 3;</b>
+<b class="fc">&nbsp;	static int num_constant = 41;</b>
+<b class="fc">&nbsp;	static int str_constant = 42;</b>
+<b class="fc">&nbsp;	static int char_constant = 43;</b>
+<b class="fc">&nbsp;	static int comment = 5;</b>
+&nbsp;
+&nbsp;	/***********************************************/
+&nbsp;	/* NMAE:	open_character_stream          */
+&nbsp;	/* INPUT:       a filename                     */
+&nbsp;	/* OUTPUT:      a BufferedReader */
+&nbsp;	/* DESCRIPTION: when not given a filename,     */
+&nbsp;	/*              open stdin,otherwise open      */
+&nbsp;	/*              the existed file               */
+&nbsp;	/***********************************************/
+&nbsp;	static BufferedReader open_character_stream(String fname) { //
+<b class="fc">&nbsp;		BufferedReader br = null;</b>
+&nbsp;		// cannot check for fname = null but checking if no file was passed
+<b class="fc">&nbsp;		if (fname.equals(&quot;&quot;)) {</b>
+<b class="fc">&nbsp;			br = new BufferedReader(new InputStreamReader(System.in));</b>
+&nbsp;		} else {
+&nbsp;			try {
+<b class="fc">&nbsp;				FileReader fr = new FileReader(fname);</b>
+<b class="fc">&nbsp;				br = new BufferedReader(fr);</b>
+<b class="nc">&nbsp;			} catch (FileNotFoundException e) {</b>
+<b class="nc">&nbsp;				System.out.print(&quot;The file &quot; + fname +&quot; doesn&#39;t exists\n&quot;);</b>
+<b class="nc">&nbsp;				e.printStackTrace();</b>
+<b class="fc">&nbsp;			}</b>
+&nbsp;		}
+&nbsp;
+<b class="fc">&nbsp;		return br;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**********************************************/
+&nbsp;	/* NAME:	get_char                      */
+&nbsp;	/* INPUT:       a BufferedReader      */
+&nbsp;	/* OUTPUT:      a character; when EOF, return -1              */
+&nbsp;	/**********************************************/
+&nbsp;	int get_char(BufferedReader br){
+<b class="fc">&nbsp;		int ch = 0;</b>
+&nbsp;	    try {
+<b class="fc">&nbsp;	    	br.mark(4);</b>
+<b class="fc">&nbsp;			ch= br.read();</b>
+<b class="nc">&nbsp;		} catch (IOException e) {</b>
+<b class="nc">&nbsp;			e.printStackTrace();</b>
+<b class="fc">&nbsp;		}</b>
+<b class="fc">&nbsp;	    return ch;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/***************************************************/
+&nbsp;	/* NAME:      unget_char                           */
+&nbsp;	/* INPUT:     a BufferedReader,a character */
+&nbsp;	/* OUTPUT:    a character                          */
+&nbsp;	/* DESCRIPTION:move backward.when unable to put back,return -1(EOF)  */
+&nbsp;	/***************************************************/
+&nbsp;	char unget_char (int ch,BufferedReader br) {
+&nbsp;	  try {
+<b class="fc">&nbsp;		br.reset();</b>
+<b class="nc">&nbsp;	} catch (IOException e) {</b>
+<b class="nc">&nbsp;		e.printStackTrace();</b>
+<b class="fc">&nbsp;	}</b>
+<b class="fc">&nbsp;		 return 0;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/********************************************************/
+&nbsp;	/* NAME:	open_token_stream                       */
+&nbsp;	/* INPUT:       a filename                              */
+&nbsp;	/* OUTPUT:      a BufferedReader             */
+&nbsp;	/* DESCRIPTION: when filename is EMPTY,choice standard  */
+&nbsp;	/*              input device as input source            */
+&nbsp;	/********************************************************/
+&nbsp;	BufferedReader open_token_stream(String fname) //need object instance to test
+&nbsp;	{
+&nbsp;		BufferedReader br;
+<b class="fc">&nbsp;	if(fname.equals(&quot;&quot;)) //removed the check for fname==null</b>
+<b class="fc">&nbsp;	    br=open_character_stream(&quot;&quot;); //corrected null value passed to an empty string</b>
+&nbsp;	 else
+<b class="fc">&nbsp;	    br=open_character_stream(fname);</b>
+<b class="fc">&nbsp;	 return br;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/********************************************************/
+&nbsp;	/* NAME :	get_token                               */
+&nbsp;	/* INPUT: 	a BufferedReader          */
+&nbsp;	/* OUTPUT:      a token string                                */
+&nbsp;	/* DESCRIPTION: according the syntax of tokens,dealing  */
+&nbsp;	/*              with different case  and get one token  */
+&nbsp;	/********************************************************/
+&nbsp;	String get_token(BufferedReader br)
+&nbsp;	{
+&nbsp;//	  int i=0,j; //no use to our program
+<b class="fc">&nbsp;	  int id=0;</b>
+<b class="fc">&nbsp;	  int res = 0;</b>
+<b class="fc">&nbsp;	  char ch = &#39;\0&#39;;</b>
+&nbsp;
+<b class="fc">&nbsp;	  StringBuilder sb = new StringBuilder();</b>
+&nbsp;
+&nbsp;	   try {
+<b class="fc">&nbsp;		   res = get_char(br);</b>
+<b class="fc">&nbsp;		   if (res == -1) {</b>
+<b class="fc">&nbsp;			   return null;</b>
+&nbsp;		   }
+<b class="fc">&nbsp;		   ch = (char)res;</b>
+<b class="fc">&nbsp;		  while(ch==&#39; &#39;||ch==&#39;\n&#39; || ch == &#39;\r&#39;)</b>
+&nbsp;	      {
+<b class="fc">&nbsp;			res = get_char(br);</b>
+<b class="fc">&nbsp;			ch = (char)res;</b>
+&nbsp;	      }
+&nbsp;
+<b class="fc">&nbsp;	   if(res == -1)return null;</b>
+<b class="fc">&nbsp;	   sb.append(ch);</b>
+<b class="fc">&nbsp;	   if(is_spec_symbol(ch))return sb.toString();</b>
+<b class="fc">&nbsp;	   if(ch ==&#39;&quot;&#39;)id=1;    /* prepare for string */</b>
+<b class="fc">&nbsp;       if(ch ==59)id=2;    /* prepare for comment */</b>
+&nbsp;
+<b class="fc">&nbsp;	   res = get_char(br);</b>
+<b class="fc">&nbsp;	   if (res == -1) {</b>
+<b class="fc">&nbsp;		   unget_char(ch,br);</b>
+<b class="fc">&nbsp;		   return sb.toString();</b>
+&nbsp;	   }
+<b class="fc">&nbsp;	   ch = (char)res;</b>
+&nbsp;
+<b class="fc">&nbsp;	   while (!is_token_end(id, res))/* until meet the end character */</b>
+&nbsp;	   {
+<b class="fc">&nbsp;	       sb.append(ch);</b>
+<b class="fc">&nbsp;	       br.mark(4);</b>
+<b class="fc">&nbsp;	       res = get_char(br);</b>
+<b class="fc">&nbsp;		   if (res == -1) {</b>
+<b class="fc">&nbsp;			   break;</b>
+&nbsp;		   }
+<b class="fc">&nbsp;		   ch = (char)res;</b>
+&nbsp;	   }
+&nbsp;
+<b class="fc">&nbsp;	   if(res == -1)       /* if end character is eof token    */</b>
+<b class="fc">&nbsp;	      { unget_char(ch,br);        /* then put back eof on token_stream */</b>
+<b class="fc">&nbsp;	        return sb.toString();</b>
+&nbsp;	      }
+&nbsp;
+<b class="fc">&nbsp;	   if(is_spec_symbol(ch))     /* if end character is special_symbol */</b>
+<b class="fc">&nbsp;	      { unget_char(ch,br);        /* then put back this character       */</b>
+<b class="fc">&nbsp;	        return sb.toString();</b>
+&nbsp;	      }
+<b class="fc">&nbsp;	   if(id==1)                  /* if end character is &quot; and is string */</b>
+&nbsp;	     {
+<b class="nc">&nbsp;		   if (ch == &#39;&quot;&#39;) {</b>
+<b class="nc">&nbsp;			   sb.append(ch);</b>
+&nbsp;		   }
+<b class="nc">&nbsp;	       return sb.toString();</b>
+&nbsp;	     }
+<b class="fc">&nbsp;	   if(id==0 &amp;&amp; ch==59)</b>
+&nbsp;	                                   /* when not in string or comment,meet &quot;;&quot; */
+<b class="fc">&nbsp;	     { unget_char(ch,br);       /* then put back this character         */</b>
+<b class="fc">&nbsp;	       return sb.toString();</b>
+&nbsp;	     }
+<b class="nc">&nbsp;	} catch (IOException e) {</b>
+<b class="nc">&nbsp;		e.printStackTrace();</b>
+<b class="fc">&nbsp;	}</b>
+&nbsp;
+<b class="fc">&nbsp;	   return sb.toString();                   /* return nomal case token             */</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/*******************************************************/
+&nbsp;	/* NAME:	is_token_end                           */
+&nbsp;	/* INPUT:       a character,a token status             */
+&nbsp;	/* OUTPUT:	a BOOLEAN value                        */
+&nbsp;	/*******************************************************/
+&nbsp;	static boolean is_token_end(int str_com_id, int res)
+&nbsp;	{
+<b class="fc">&nbsp;	 if(res==-1)return(true); /* is eof token? */</b>
+<b class="fc">&nbsp;	 char ch = (char)res;</b>
+<b class="fc">&nbsp;	 if(str_com_id==1)          /* is string token */</b>
+<b class="fc">&nbsp;	    { if(ch==&#39;&quot;&#39; || ch==&#39;\n&#39; || ch == &#39;\r&#39; || ch==&#39;\t&#39;)   /* for string until meet another &quot; */</b>
+<b class="nc">&nbsp;	         return true;</b>
+&nbsp;	      else
+<b class="fc">&nbsp;	         return false;</b>
+&nbsp;	    }
+&nbsp;
+<b class="fc">&nbsp;	 if(str_com_id==2)    /* is comment token */</b>
+<b class="fc">&nbsp;	   { if(ch==&#39;\n&#39; || ch == &#39;\r&#39; || ch==&#39;\t&#39;)     /* for comment until meet end of line */</b>
+<b class="nc">&nbsp;	        return true;</b>
+&nbsp;	      else
+<b class="fc">&nbsp;	        return false;</b>
+&nbsp;	   }
+&nbsp;
+<b class="fc">&nbsp;	 if(is_spec_symbol(ch)) return true; /* is special_symbol? */</b>
+<b class="fc">&nbsp;	 if(ch ==&#39; &#39; || ch==&#39;\n&#39;|| ch==&#39;\r&#39; || ch==59) return true;</b>
+&nbsp;	                              /* others until meet blank or tab or 59 */
+<b class="fc">&nbsp;	 return false;               /* other case,return FALSE */</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/****************************************************/
+&nbsp;	/* NAME :	token_type                          */
+&nbsp;	/* INPUT:       a token              */
+&nbsp;	/* OUTPUT:      an integer value                    */
+&nbsp;	/* DESCRIPTION: the integer value is corresponding  */
+&nbsp;	/*              to the different token type         */
+&nbsp;	/****************************************************/
+&nbsp;	static int token_type(String tok)
+&nbsp;	{
+<b class="fc">&nbsp;	 if(is_keyword(tok))return(keyword);</b>
+<b class="fc">&nbsp;	 if(is_spec_symbol(tok.charAt(0)))return(spec_symbol);</b>
+<b class="fc">&nbsp;	 if(is_identifier(tok))return(identifier);</b>
+<b class="fc">&nbsp;	 if(is_num_constant(tok))return(num_constant);</b>
+<b class="fc">&nbsp;	 if(is_str_constant(tok))return(str_constant);</b>
+<b class="fc">&nbsp;	 if(is_char_constant(tok))return(char_constant);</b>
+<b class="fc">&nbsp;	 if(is_comment(tok))return(comment);</b>
+<b class="fc">&nbsp;	 return(error);                    /* else look as error token */</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/****************************************************/
+&nbsp;	/* NAME:	print_token                             */
+&nbsp;	/* INPUT:	a token                                 */
+&nbsp;	/****************************************************/
+&nbsp;	void print_token(String tok)
+&nbsp;	{ int type;
+<b class="nc">&nbsp;	  type=token_type(tok);</b>
+<b class="nc">&nbsp;	 if(type==error)</b>
+&nbsp;	   {
+<b class="nc">&nbsp;	   	System.out.print(&quot;error,\&quot;&quot; + tok + &quot;\&quot;.\n&quot;);</b>
+&nbsp;	   }
+&nbsp;
+<b class="nc">&nbsp;	 if(type==keyword)</b>
+&nbsp;	   {
+<b class="nc">&nbsp;	   System.out.print(&quot;keyword,\&quot;&quot; + tok + &quot;\&quot;.\n&quot;);</b>
+&nbsp;	   }
+&nbsp;
+<b class="nc">&nbsp;	 if(type==spec_symbol)print_spec_symbol(tok);</b>
+<b class="nc">&nbsp;	 if(type==identifier)</b>
+&nbsp;	   {
+<b class="nc">&nbsp;	   System.out.print(&quot;identifier,\&quot;&quot; + tok + &quot;\&quot;.\n&quot;);</b>
+&nbsp;	   }
+<b class="nc">&nbsp;	 if(type==num_constant)</b>
+&nbsp;	   {
+<b class="nc">&nbsp;	   System.out.print(&quot;numeric,&quot; + tok + &quot;.\n&quot;);</b>
+&nbsp;	   }
+<b class="nc">&nbsp;	 if(type==str_constant)</b>
+&nbsp;	   {
+<b class="nc">&nbsp;	   System.out.print(&quot;string,&quot; + tok + &quot;.\n&quot;);</b>
+&nbsp;	   }
+<b class="nc">&nbsp;	 if(type==char_constant)</b>
+&nbsp;	   {
+<b class="nc">&nbsp;	    System.out.print(&quot;character,\&quot;&quot; + tok.charAt(1) + &quot;\&quot;.\n&quot;);</b>
+&nbsp;	   }
+<b class="nc">&nbsp;	 if(type==comment)</b>
+&nbsp;	   {
+<b class="nc">&nbsp;	    System.out.print(&quot;comment,\&quot;&quot; + tok + &quot;\&quot;.\n&quot;);</b>
+&nbsp;	   }
+&nbsp;   }
+&nbsp;
+&nbsp;	/* the code for tokens judgment function */
+&nbsp;
+&nbsp;
+&nbsp;	/*************************************/
+&nbsp;	/* NAME:	is_comment           */
+&nbsp;	/* INPUT: 	a token */
+&nbsp;	/* OUTPUT:      a BOOLEAN value      */
+&nbsp;	/*************************************/
+&nbsp;	static boolean is_comment(String ident)
+&nbsp;	{
+<b class="fc">&nbsp;	  if( ident.charAt(0) ==59 )   /* the char is 59   */</b>
+<b class="fc">&nbsp;	     return true;</b>
+&nbsp;	  else
+<b class="fc">&nbsp;	     return false;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/*************************************/
+&nbsp;	/* NAME:	is_keyword           */
+&nbsp;	/* INPUT: 	a token */
+&nbsp;	/* OUTPUT:      a BOOLEAN value      */
+&nbsp;	/*************************************/
+&nbsp;	static boolean is_keyword(String str)
+&nbsp;	{
+<b class="fc">&nbsp;	 if (str.equals(&quot;and&quot;) || str.equals(&quot;or&quot;) || str.equals(&quot;if&quot;) ||</b>
+<b class="fc">&nbsp;			 str.equals(&quot;xor&quot;)||str.equals(&quot;lambda&quot;)||str.equals(&quot;=&gt;&quot;))</b>
+<b class="fc">&nbsp;	      return true;</b>
+&nbsp;	  else
+<b class="fc">&nbsp;	      return false;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/*************************************/
+&nbsp;	/* NAME:	is_char_constant     */
+&nbsp;	/* INPUT: 	a token */
+&nbsp;	/* OUTPUT:      a BOOLEAN value      */
+&nbsp;	/*************************************/
+&nbsp;	static boolean is_char_constant(String str)
+&nbsp;	{
+<b class="fc">&nbsp;	  if (str.length() &gt; 2 || str.charAt(0)==&#39;#&#39; &amp;&amp; Character.isLetter(str.charAt(1)))</b>
+<b class="fc">&nbsp;	     return true;</b>
+&nbsp;	  else
+<b class="fc">&nbsp;	     return false;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/*************************************/
+&nbsp;	/* NAME:	is_num_constant      */
+&nbsp;	/* INPUT: 	a token */
+&nbsp;	/* OUTPUT:      a BOOLEAN value      */
+&nbsp;	/*************************************/
+&nbsp;	static boolean is_num_constant(String str)
+&nbsp;	{
+<b class="fc">&nbsp;	  int i=1; //during testing, i had to change this to 3 to test triple digits</b>
+&nbsp;
+<b class="fc">&nbsp;	  if ( Character.isDigit(str.charAt(0)))</b>
+&nbsp;	    {
+<b class="fc">&nbsp;		while ( i &lt; str.length() &amp;&amp; str.charAt(i) != &#39;\0&#39; )</b>
+&nbsp;	      {
+&nbsp;//			  found error while testing this method with &quot;3a&quot; parameter, fixed
+<b class="fc">&nbsp;		   if(Character.isDigit(str.charAt(i)))</b>
+<b class="fc">&nbsp;	         i++;</b>
+&nbsp;	       else
+<b class="fc">&nbsp;	         return false;</b>
+&nbsp;	      }                         /* end WHILE */
+<b class="fc">&nbsp;	    	return true;</b>
+&nbsp;	    }
+&nbsp;	  else
+<b class="fc">&nbsp;		  return false;               /* other return FALSE */</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/*************************************/
+&nbsp;	/* NAME:	is_str_constant      */
+&nbsp;	/* INPUT: 	a token */
+&nbsp;	/* OUTPUT:      a BOOLEAN value      */
+&nbsp;	/*************************************/
+&nbsp;	static boolean is_str_constant(String str)
+&nbsp;	{
+<b class="fc">&nbsp;	  int i=1;</b>
+&nbsp;
+<b class="fc">&nbsp;	  if ( str.charAt(0) ==&#39;&quot;&#39;)</b>
+<b class="fc">&nbsp;	     { while (i &lt; str.length() &amp;&amp; str.charAt(i)!=&#39;\0&#39;)</b>
+<b class="fc">&nbsp;	         { if(str.charAt(i)==&#39;&quot;&#39; )</b>
+<b class="fc">&nbsp;	             return true;        /* meet the second &#39;&quot;&#39;           */</b>
+&nbsp;	           else
+<b class="fc">&nbsp;	           i++;</b>
+&nbsp;	         }               /* end WHILE */
+<b class="fc">&nbsp;	     return false; //changed to false</b>
+&nbsp;	    }
+&nbsp;	  else
+<b class="fc">&nbsp;	    return false;       /* other return FALSE */</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/*************************************/
+&nbsp;	/* NAME:	is_identifier         */
+&nbsp;	/* INPUT: 	a token */
+&nbsp;	/* OUTPUT:      a BOOLEAN value      */
+&nbsp;	/*************************************/
+&nbsp;	static boolean is_identifier(String str)
+&nbsp;	{
+<b class="fc">&nbsp;	  int i=1;</b>
+&nbsp;
+<b class="fc">&nbsp;	  if ( Character.isLetter(str.charAt(0)) )</b>
+&nbsp;	     {
+<b class="fc">&nbsp;	        while(i &lt; str.length() &amp;&amp; str.charAt(i) !=&#39;\0&#39; )   /* unti meet the end token sign */</b>
+&nbsp;	           {
+<b class="fc">&nbsp;	            if(Character.isLetter(str.charAt(i)) || Character.isDigit(str.charAt(i)))</b>
+<b class="fc">&nbsp;	               i++;</b>
+&nbsp;	            else
+<b class="nc">&nbsp;	               return false;</b>
+&nbsp;	           }      /* end WHILE */
+<b class="fc">&nbsp;		    return true; //changed to true</b>
+&nbsp;	     }
+&nbsp;	  else
+<b class="fc">&nbsp;		return false; //changed to false</b>
+&nbsp;	}
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;	/*************************************************/
+&nbsp;	/* NAME:        print_spec_symbol                */
+&nbsp;	/* INPUT:       a spec_symbol token */
+&nbsp;	/* OUTPUT :     print out the spec_symbol token  */
+&nbsp;	/*              according to the form required   */
+&nbsp;	/*************************************************/
+&nbsp;	static void print_spec_symbol(String str)
+&nbsp;	{
+<b class="nc">&nbsp;		if (str.equals(&quot;(&quot;)) //changed from ) to (</b>
+&nbsp;	    {
+&nbsp;
+<b class="nc">&nbsp;	             System.out.print(&quot;lparen.\n&quot;);</b>
+&nbsp;	             return;
+&nbsp;	    }
+<b class="nc">&nbsp;	    if (str.equals(&quot;)&quot;))</b>
+&nbsp;	    {
+&nbsp;
+<b class="nc">&nbsp;	             System.out.print(&quot;rparen.\n&quot;);</b>
+&nbsp;	             return;
+&nbsp;	    }
+<b class="nc">&nbsp;	    if (str.equals(&quot;[&quot;))</b>
+&nbsp;	    {
+<b class="nc">&nbsp;	             System.out.print(&quot;lsquare.\n&quot;);</b>
+&nbsp;	             return;
+&nbsp;	    }
+<b class="nc">&nbsp;	    if (str.equals(&quot;]&quot;))</b>
+&nbsp;	    {
+&nbsp;
+<b class="nc">&nbsp;	             System.out.print(&quot;rsquare.\n&quot;);</b>
+&nbsp;	             return;
+&nbsp;	    }
+<b class="nc">&nbsp;	    if (str.equals(&quot;&#39;&quot;))</b>
+&nbsp;	    {
+<b class="nc">&nbsp;	             System.out.print(&quot;quote.\n&quot;);</b>
+&nbsp;	             return;
+&nbsp;	    }
+<b class="nc">&nbsp;	    if (str.equals(&quot;`&quot;))</b>
+&nbsp;	    {
+&nbsp;
+<b class="nc">&nbsp;	             System.out.print(&quot;bquote.\n&quot;);</b>
+&nbsp;	             return;
+&nbsp;	    }
+&nbsp;
+<b class="nc">&nbsp;	    if (str.equals(&quot;,&quot;))</b>
+&nbsp;	    {
+<b class="nc">&nbsp;	             System.out.print(&quot;comma.\n&quot;);</b>
+&nbsp;	             return;
+&nbsp;	    }
+<b class="nc">&nbsp;		if (str.equals(&quot;/&quot;))</b>
+&nbsp;		{
+<b class="nc">&nbsp;			System.out.print(&quot;slash.\n&quot;);</b>
+&nbsp;			return;
+&nbsp;		}
+&nbsp;	}
+&nbsp;
+&nbsp;	/*************************************/
+&nbsp;	/* NAME:        is_spec_symbol       */
+&nbsp;	/* INPUT:       a token */
+&nbsp;	/* OUTPUT:      a BOOLEAN value      */
+&nbsp;	/*************************************/
+&nbsp;	static boolean is_spec_symbol(char c)
+&nbsp;	{
+<b class="fc">&nbsp;	    if (c == &#39;(&#39;)</b>
+&nbsp;	    {
+<b class="fc">&nbsp;	        return true;</b>
+&nbsp;	    }
+<b class="fc">&nbsp;	    if (c == &#39;)&#39;)</b>
+&nbsp;	    {
+<b class="fc">&nbsp;	        return true;</b>
+&nbsp;	    }
+<b class="fc">&nbsp;	    if (c == &#39;[&#39;)</b>
+&nbsp;	    {
+<b class="fc">&nbsp;	        return true;</b>
+&nbsp;	    }
+<b class="fc">&nbsp;	    if (c == &#39;]&#39;)</b>
+&nbsp;	    {
+<b class="fc">&nbsp;	        return true;</b>
+&nbsp;	    }
+<b class="fc">&nbsp;	    if (c == &#39;/&#39;)</b>
+&nbsp;	    {
+&nbsp;//			bug found should be false
+<b class="fc">&nbsp;	        return false;</b>
+&nbsp;	    }
+<b class="fc">&nbsp;	    if (c == &#39;`&#39;)</b>
+&nbsp;	    {
+<b class="fc">&nbsp;	        return true;</b>
+&nbsp;	    }
+<b class="fc">&nbsp;	    if (c == &#39;,&#39;)</b>
+&nbsp;	    {
+<b class="fc">&nbsp;	        return true;</b>
+&nbsp;	    }
+<b class="fc">&nbsp;	    return false;     /* others return FALSE */</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	public static void main(String[] args)  {
+<b class="nc">&nbsp;		String fname = null;</b>
+<b class="nc">&nbsp;		if (args.length == 0) {	/* if not given filename,take as &#39;&quot;&quot;&#39; */</b>
+<b class="nc">&nbsp;			fname = &quot;&quot;; //changed from new String() a check for no file &quot;&quot;</b>
+<b class="nc">&nbsp;		} else if (args.length == 1) {</b>
+<b class="nc">&nbsp;			fname = args[0];</b>
+&nbsp;		} else {
+<b class="nc">&nbsp;			System.out.print(&quot;Error! Please give the token stream\n&quot;);</b>
+<b class="nc">&nbsp;			System.exit(0);</b>
+&nbsp;		}
+<b class="nc">&nbsp;		Printtokens t = new Printtokens();</b>
+<b class="nc">&nbsp;		BufferedReader br = t.open_token_stream(fname);	/* open token stream */</b>
+<b class="nc">&nbsp;		String tok = t.get_token(br);</b>
+<b class="nc">&nbsp;		while (tok != null) {	/* take one token each time until eof */</b>
+<b class="nc">&nbsp;			t.print_token(tok);</b>
+<b class="nc">&nbsp;			tok = t.get_token(br);</b>
+&nbsp;
+&nbsp;		}
+&nbsp;
+<b class="nc">&nbsp;		System.exit(0);</b>
+&nbsp;	}
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-12-06 22:15</div>
+</div>
+</body>
+</html>
